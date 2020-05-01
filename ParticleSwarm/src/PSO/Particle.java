@@ -18,14 +18,11 @@ class Particle {
      * @param beginRange    the minimum xyz values of the position (inclusive)
      * @param endRange      the maximum xyz values of the position (exclusive)
      */
-    Particle (FunctionType function, int beginRange, int endRange) {
-        if (beginRange >= endRange) {
-            throw new IllegalArgumentException("Begin range must be less than end range.");
-        }
+    Particle (FunctionType function) {
         this.function = function;
         position = new Vector();
         velocity = new Vector();
-        setRandomPosition(beginRange, endRange);
+        setRandomPosition();
         bestPosition = velocity.clone();
         bestEval = eval();
     }
@@ -35,35 +32,29 @@ class Particle {
      * @return      the evaluation
      */
     private double eval () {
-        if (function == FunctionType.FunctionA) {
-            return Function.functionA(position.getX());
-        } else if (function == FunctionType.Ackleys) {
-            return Function.ackleysFunction(position.getX(), position.getY());
-        } else if (function == FunctionType.Booths) {
-            return Function.boothsFunction(position.getX(), position.getY());
-        } else if (function == FunctionType.TestFunction){
-        	return Function.myFunction(1000, getPosition(), 200);
-        }else {
-            return Function.threeHumpCamelFunction(position.getX(), position.getY());
-        }
+    	Vector eval = Function.myFunction(1000, getPosition(), 200);
+        return eval.biggestResult();
     }
 
-    private void setRandomPosition (int beginRange, int endRange) {
-        int x = rand(beginRange, endRange);
-        int y = rand(beginRange, endRange);
-        int z = rand(beginRange, endRange);
-        position.set(x, y, z);
+    private void setRandomPosition () {
+        double x = rand();
+        double y = rand();
+        double z = rand();
+        if(x == 0 && x == y && y == z){
+        	position.set(0, 0, 0);
+        }else{
+        	position.set((x*100)/(x+y+z), (y*100)/(x+y+z), (z*100)/(x+y+z));
+        }
+        
     }
 
     /**
-     * Generate a random number between a certain range.
-     * @param beginRange    the minimum value (inclusive)
-     * @param endRange      the maximum value (exclusive)
+     * Generate a random number between 0.0 and 1.0.
      * @return              the randomly generated value
      */
-    private static int rand (int beginRange, int endRange) {
+    private static double rand () {
         Random r = new java.util.Random();
-        return r.nextInt(endRange - beginRange) + beginRange;
+        return r.nextDouble()*100; //generate random from [0.0,1.0)
     }
 
     /**
@@ -123,6 +114,8 @@ class Particle {
     void setVelocity (Vector velocity) {
         this.velocity = velocity.clone();
     }
+    
+    
 
     public enum FunctionType {
         FunctionA,

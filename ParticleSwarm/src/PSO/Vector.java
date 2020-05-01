@@ -110,6 +110,15 @@ class Vector {
     public String toString () {
         return "(" + x + ", " + y + ", " + z + ")";
     }
+    
+    public double biggestResult(){
+    	double max = this.getX();
+    	if(max <= this.getY())
+    		max = this.getY();
+    	if(max <= this.getZ())
+    		max = this.getZ();
+    	return max;
+    }
 
 }
 

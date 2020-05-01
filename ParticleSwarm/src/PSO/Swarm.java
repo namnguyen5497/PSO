@@ -18,16 +18,7 @@ public class Swarm {
     public static final double DEFAULT_COGNITIVE = 1.496180; // Cognitive component.
     public static final double DEFAULT_SOCIAL = 1.496180; // Social component.
 
-    /**
-     * When Particles are created they are given a random position.
-     * The random position is selected from a specified range.
-     * If the begin range is 0 and the end range is 10 then the
-     * value will be between 0 (inclusive) and 10 (exclusive).
-     */
-    private int beginRange, endRange;
-    private static final int DEFAULT_BEGIN_RANGE = -100;
-    private static final int DEFAULT_END_RANGE = 101;
-
+   
     /**
      * Construct the Swarm with default values.
      * @param particles     the number of particles to create
@@ -55,8 +46,6 @@ public class Swarm {
         double infinity = Double.POSITIVE_INFINITY;
         bestPosition = new Vector(infinity, infinity, infinity);
         bestEval = Double.POSITIVE_INFINITY;
-        beginRange = DEFAULT_BEGIN_RANGE;
-        endRange = DEFAULT_END_RANGE;
     }
 
     /**
@@ -88,10 +77,8 @@ public class Swarm {
         }
 
         System.out.println("---------------------------RESULT---------------------------");
-        System.out.println("x = " + bestPosition.getX());
-        if (function != FunctionType.FunctionA) {
-            System.out.println("y = " + bestPosition.getY());
-        }
+        System.out.println("x = " + bestPosition.getX() + " y = " + bestPosition.getY() + " z = " + bestPosition.getZ());
+        
         System.out.println("Final Best Evaluation: " + bestEval);
         System.out.println("---------------------------COMPLETE-------------------------");
 
@@ -104,7 +91,7 @@ public class Swarm {
     private Particle[] initialize () {
         Particle[] particles = new Particle[numOfParticles];
         for (int i = 0; i < numOfParticles; i++) {
-            Particle particle = new Particle(function, beginRange, endRange);
+            Particle particle = new Particle(function);
             particles[i] = particle;
             updateGlobalBest(particle);
         }
