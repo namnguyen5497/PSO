@@ -127,6 +127,10 @@ class Vector {
     	
     	return max;
     }
+    
+    public double getSum(){
+    	return this.getX() + this.getY() + this.getZ();
+    }
 
 }
 

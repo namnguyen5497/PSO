@@ -22,20 +22,9 @@ class Particle {
         velocity = new Vector();
         setRandomPosition();
         bestPosition = position.clone();
-        bestEval = eval();
     }
 
-    /**
-     * The evaluation of the current position.
-     * @return      the evaluation
-     */
-    private double eval () {
-    	Vector currentWorkload = new Vector(100, 0 , 0);
-    	double eval = Function.mainFunction(this, 100, currentWorkload);
-    	//double length = Math.sqrt(Math.pow(eval.getX(),2) + Math.pow(eval.getY(),2) + Math.pow(eval.getZ(),2));
-        return eval;
-        //return length;
-    }
+//   
 
     private void setRandomPosition () {
         double x = rand();
@@ -119,5 +108,11 @@ class Particle {
         this.velocity = velocity.clone();
     }
     
-
+    void setBestEval (double bestEval){
+    	this.bestEval = bestEval;
+    }
+    
+    void setPosition (Vector pos){
+    	this.position = pos;
+    }
 }

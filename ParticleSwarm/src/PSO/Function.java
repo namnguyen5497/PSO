@@ -4,7 +4,7 @@ class Function {
 	
 	private Function(){}
     
-    static double mainFunction(Particle p, int workLoad, Vector currentWorkload){
+    static Vector mainFunction(Particle p, int workLoad, Vector currentWorkload){
     	/**
          * @param workLoad 			number of images from 1 service
          * @param p    				percent workload
@@ -16,10 +16,10 @@ class Function {
     	Vector p_temp = position.clone(); // for 2nd part
     	
     	final double avgImageSize = 5413.26287; //bytes
-    	double scpRate = 0.000187 + Math.pow(workLoad*avgImageSize, 0.75429); // testSCP_26.04
+    	double scpRate = 0.0002 + Math.pow(workLoad*avgImageSize, 0.75429); // testSCP_26.04
     	
     	//1st part: p*Wi / Bji
-    	position.mul(Double.valueOf(workLoad)); 
+    	position.mul(workLoad*avgImageSize); 
     	position.div(scpRate*1000000);  // bytes / (Mbps*1,000,000)
     	
     	//2nd part: 1.2855 + 0.04928*p*workLoad (test_detect_pi_26.04)
@@ -47,7 +47,7 @@ class Function {
     	position.add(Theta);
     	position.add(T_result);
     	//System.out.println("Tmax = " + p.getBiggestResult());
-    	return Math.abs(position.getX()) + Math.abs(position.getY()) + Math.abs(position.getZ());
+    	return position;
     	
     }
     

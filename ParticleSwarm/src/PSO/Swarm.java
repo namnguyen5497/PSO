@@ -88,6 +88,9 @@ public class Swarm {
 
         System.out.println("---------------------------RESULT---------------------------");
         System.out.println("x = " + bestPosition.getX() + " y = " + bestPosition.getY() + " z = " + bestPosition.getZ());
+        Particle bestParticle = new Particle();
+        bestParticle.setPosition(bestPosition);
+        System.out.println("max Time = " + Function.mainFunction(bestParticle, workLoad, currentWorkload).getBiggestResult());
         
         System.out.println("Final Best Evaluation: " + bestEval);
         System.out.println("---------------------------COMPLETE-------------------------");
@@ -102,9 +105,11 @@ public class Swarm {
         Particle[] particles = new Particle[numOfParticles];
         for (int i = 0; i < numOfParticles; i++) {
             Particle particle = new Particle();
-            System.out.println("Particle: " + particle.getPosition().getX() + 
+            System.out.println("Particle" + i + ": " + particle.getPosition().getX() + 
             											" " + particle.getPosition().getY()+ 
             											" " + particle.getPosition().getZ());
+            double initialBestEval =  Function.mainFunction(particle, workLoad, currentWorkload).getSum();
+            particle.setBestEval(initialBestEval);
             //Checked sum = 100 
             particles[i] = particle;
             updateGlobalBest(particle);
@@ -113,7 +118,7 @@ public class Swarm {
     }
     
     private double eval(Particle p){
-    	double eval = Function.mainFunction(p, workLoad, currentWorkload);
+    	double eval = Function.mainFunction(p, workLoad, currentWorkload).getSum();
     	if(Function.constraintF1(p)){
     		eval = INFINITY;
     	}
