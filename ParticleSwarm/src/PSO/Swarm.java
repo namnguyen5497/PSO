@@ -16,7 +16,7 @@ public class Swarm {
     private double bestEval;
     public static final double INERTIA_MAX = 0.9;
     public static final double INERTIA_MIN = 0.4;
-    public static final double DEFAULT_COGNITIVE = 2; // Cognitive component.
+    public static final double DEFAULT_COGNITIVE = 1; // Cognitive component.
     public static final double DEFAULT_SOCIAL = 2.05; // Social component.
     
     public static final double INFINITY = Double.POSITIVE_INFINITY;
@@ -108,8 +108,8 @@ public class Swarm {
             System.out.println("Particle" + i + ": " + particle.getPosition().getX() + 
             											" " + particle.getPosition().getY()+ 
             											" " + particle.getPosition().getZ());
-            double initialBestEval =  Function.mainFunction(particle, workLoad, currentWorkload).getSum();
-            particle.setBestEval(initialBestEval);
+            double initialEval =  Function.mainFunction(particle, workLoad, currentWorkload).getSum();
+            particle.updatePersonalBest(initialEval);;
             //Checked sum = 100 
             particles[i] = particle;
             updateGlobalBest(particle);
@@ -119,16 +119,16 @@ public class Swarm {
     
     private double eval(Particle p){
     	double eval = Function.mainFunction(p, workLoad, currentWorkload).getSum();
-    	if(Function.constraintF1(p)){
-    		eval = INFINITY;
-    	}
-    	if(Function.constraintF2(p)){
-    		eval = INFINITY;
-    	}
 
-    	if(Function.constraintF3(p, workLoad , currentWorkload )){
+    	if(Function.constraintF1(p))
     		eval = INFINITY;
-    	}
+    	
+    	if(Function.constraintF2(p))
+    		eval = INFINITY;
+
+    	if(Function.constraintF3(p, workLoad , currentWorkload ))
+    		eval = INFINITY;
+    	
     	return eval;
     }
 

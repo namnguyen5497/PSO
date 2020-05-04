@@ -12,15 +12,16 @@ class Function {
          * @param currentWorkload	current workload at that node
          * @return      			total time
          */
-    	Vector position = p.getPosition();
+    	Vector position = p.getPosition().clone();
     	Vector p_temp = position.clone(); // for 2nd part
     	
     	final double avgImageSize = 5413.26287; //bytes
-    	double scpRate = 0.0002 + Math.pow(workLoad*avgImageSize, 0.75429); // testSCP_26.04
+    	
     	
     	//1st part: p*Wi / Bji
-    	position.mul(workLoad*avgImageSize); 
-    	position.div(scpRate*1000000);  // bytes / (Mbps*1,000,000)
+    	position.mul(workLoad*avgImageSize*0.0009); 
+    	position.add(new Vector(614.3, 614.3, 614.3));
+    	position.mul(0.001); // change to second
     	
     	//2nd part: 1.2855 + 0.04928*p*workLoad (test_detect_pi_26.04)
     	p_temp.mul(Double.valueOf(workLoad));
@@ -50,9 +51,14 @@ class Function {
     	return position;
     	
     }
-    
+    /**
+     * Sum pi = 1
+     * @param p particle
+     * @return true if not satisfy 
+     */
     static boolean constraintF1(Particle p){
-    	if(p.getPosition().getX() + p.getPosition().getY() + p.getPosition().getX() != 1){
+    	if(p.getPosition().getX() + p.getPosition().getY() + p.getPosition().getZ() != 1.0){
+    		
     		return true;
     	}
     	return false;
@@ -64,7 +70,7 @@ class Function {
      */
     static boolean constraintF2(Particle p){
     	Vector position = p.getPosition();
-    	if(position.getX() < 0 || position.getY() < 0 || position.getZ() <0)
+    	if(position.getX() < 0 || position.getY() < 0 || position.getZ() < 0)
     		return true;
     	return false;
     }

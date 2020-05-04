@@ -10,7 +10,7 @@ class Particle {
     private Vector position;        // Current position.
     private Vector velocity;
     private Vector bestPosition;    // Personal best solution.
-    private double bestEval;        // Personal best value.
+    private double bestEval = Double.POSITIVE_INFINITY;        // Personal best value.
   
     /**
      * Construct a Particle with a random starting position.
@@ -94,10 +94,11 @@ class Particle {
      */
     void updatePosition () {
         this.position.add(velocity);
-       // Vector currentP = this.position;
-      //  this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())
-        //							, currentP.getY() / (currentP.getX() + currentP.getY() + currentP.getZ())
-       // 							, currentP.getZ() / (currentP.getX() + currentP.getY() + currentP.getZ()));
+        //Vector currentP = this.position;
+       // this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())
+       // 							, currentP.getY() / (currentP.getX() + currentP.getY() + currentP.getZ())
+       //							, currentP.getZ() / (currentP.getX() + currentP.getY() + currentP.getZ()));
+       // System.out.println("pos after adding velocity: " + this.position.getSum());
     }
 
     /**

@@ -13,7 +13,7 @@ public class Main {
     	System.out.println("Social Component:    " + Swarm.DEFAULT_SOCIAL);
     	int particles = getUserInt("Particles: ");
         int epochs = getUserInt("Epochs:    ");
-        int workLoad = 1000;
+        int workLoad = 500;
         Vector currentWorkload = new Vector(0,0,0);
         
         Swarm swarm = new Swarm(particles, epochs, workLoad, currentWorkload);
