@@ -11,19 +11,17 @@ class Particle {
     private Vector velocity;
     private Vector bestPosition;    // Personal best solution.
     private double bestEval;        // Personal best value.
-    private FunctionType function;  // The evaluation function to use.
-
+  
     /**
      * Construct a Particle with a random starting position.
      * @param beginRange    the minimum xyz values of the position (inclusive)
      * @param endRange      the maximum xyz values of the position (exclusive)
      */
-    Particle (FunctionType function) {
-        this.function = function;
+    Particle () {
         position = new Vector();
         velocity = new Vector();
         setRandomPosition();
-        bestPosition = velocity.clone();
+        bestPosition = position.clone();
         bestEval = eval();
     }
 
@@ -32,8 +30,11 @@ class Particle {
      * @return      the evaluation
      */
     private double eval () {
-    	Vector eval = Function.myFunction(1000, getPosition(), 200);
-        return eval.biggestResult();
+    	Vector currentWorkload = new Vector(100, 0 , 0);
+    	double eval = Function.mainFunction(this, 100, currentWorkload);
+    	//double length = Math.sqrt(Math.pow(eval.getX(),2) + Math.pow(eval.getY(),2) + Math.pow(eval.getZ(),2));
+        return eval;
+        //return length;
     }
 
     private void setRandomPosition () {
@@ -43,7 +44,7 @@ class Particle {
         if(x == 0 && x == y && y == z){
         	position.set(0, 0, 0);
         }else{
-        	position.set((x*100)/(x+y+z), (y*100)/(x+y+z), (z*100)/(x+y+z));
+        	position.set(x/(x+y+z), y/(x+y+z), z/(x+y+z));
         }
         
     }
@@ -54,18 +55,17 @@ class Particle {
      */
     private static double rand () {
         Random r = new java.util.Random();
-        return r.nextDouble()*100; //generate random from [0.0,1.0)
+        return r.nextDouble(); //generate random from [0.0,1.0)
     }
 
     /**
      * Update the personal best if the current evaluation is better.
      */
-    void updatePersonalBest () {
-        double eval = eval();
-        if (eval < bestEval) {
-            bestPosition = position.clone();
-            bestEval = eval;
-        }
+    void updatePersonalBest (double eval) {
+    	if (eval < bestEval) {
+    		bestPosition = position.clone();
+    		bestEval = eval;
+    	}
     }
 
     /**
@@ -105,6 +105,10 @@ class Particle {
      */
     void updatePosition () {
         this.position.add(velocity);
+       // Vector currentP = this.position;
+      //  this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())
+        //							, currentP.getY() / (currentP.getX() + currentP.getY() + currentP.getZ())
+       // 							, currentP.getZ() / (currentP.getX() + currentP.getY() + currentP.getZ()));
     }
 
     /**
@@ -115,14 +119,5 @@ class Particle {
         this.velocity = velocity.clone();
     }
     
-    
-
-    public enum FunctionType {
-        FunctionA,
-        Ackleys,
-        Booths,
-        ThreeHumpCamel,
-        TestFunction
-    }
 
 }

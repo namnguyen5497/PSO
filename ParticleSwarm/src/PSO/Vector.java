@@ -111,12 +111,20 @@ class Vector {
         return "(" + x + ", " + y + ", " + z + ")";
     }
     
-    public double biggestResult(){
+    
+    public double[] getVectorCoordinate(){
+    	double[] coordinates = new  double[]{this.getX(), this.getY(), this.getZ()};
+    	
+    	return coordinates;
+    }
+    
+    public double getBiggestResult(){
     	double max = this.getX();
-    	if(max <= this.getY())
+    	if(max < this.getY())
     		max = this.getY();
-    	if(max <= this.getZ())
+    	if(max < this.getZ())
     		max = this.getZ();
+    	
     	return max;
     }
 
