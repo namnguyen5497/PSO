@@ -6,7 +6,7 @@ import java.util.Random;
  * Represents a particle from the Particle Swarm Optimization algorithm.
  */
 class Particle {
-
+	private String name;
     private Vector position;        // Current position.
     private Vector velocity;
     private Vector bestPosition;    // Personal best solution.
@@ -17,11 +17,12 @@ class Particle {
      * @param beginRange    the minimum xyz values of the position (inclusive)
      * @param endRange      the maximum xyz values of the position (exclusive)
      */
-    Particle () {
+    Particle (String name) {
         position = new Vector();
         velocity = new Vector();
         setRandomPosition();
         bestPosition = position.clone();
+        this.name = name;
     }
 
 //   
@@ -30,12 +31,12 @@ class Particle {
         double x = rand();
         double y = rand();
         double z = rand();
+       
         if(x == 0 && x == y && y == z){
         	position.set(0, 0, 0);
         }else{
         	position.set(x/(x+y+z), y/(x+y+z), z/(x+y+z));
-        }
-        
+        }  
     }
 
     /**
@@ -53,6 +54,7 @@ class Particle {
     void updatePersonalBest (double eval) {
     	if (eval < bestEval) {
     		bestPosition = position.clone();
+    		System.out.println("Particle "+ this.name+ " pBest: " + bestPosition.toString());
     		bestEval = eval;
     	}
     }
@@ -94,11 +96,15 @@ class Particle {
      */
     void updatePosition () {
         this.position.add(velocity);
-        //Vector currentP = this.position;
-       // this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())
-       // 							, currentP.getY() / (currentP.getX() + currentP.getY() + currentP.getZ())
-       //							, currentP.getZ() / (currentP.getX() + currentP.getY() + currentP.getZ()));
-       // System.out.println("pos after adding velocity: " + this.position.getSum());
+        System.out.println("Particle "+ this.name + " newPos: " + position.toString());
+        /*
+        Vector currentP = this.position;
+        this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())
+        		, currentP.getY() / (currentP.getX() + currentP.getY() + currentP.getZ())
+        		, currentP.getZ() / (currentP.getX() + currentP.getY() + currentP.getZ()));
+      
+         * 
+         */
     }
 
     /**
@@ -115,5 +121,9 @@ class Particle {
     
     void setPosition (Vector pos){
     	this.position = pos;
+    }
+    
+    String getName(){
+    	return name;
     }
 }

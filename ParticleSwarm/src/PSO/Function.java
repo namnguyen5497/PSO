@@ -58,7 +58,7 @@ class Function {
      */
     static boolean constraintF1(Particle p){
     	if(p.getPosition().getX() + p.getPosition().getY() + p.getPosition().getZ() != 1.0){
-    		
+    		//System.out.println("F1 = true");
     		return true;
     	}
     	return false;
@@ -70,8 +70,10 @@ class Function {
      */
     static boolean constraintF2(Particle p){
     	Vector position = p.getPosition();
-    	if(position.getX() < 0 || position.getY() < 0 || position.getZ() < 0)
+    	if(position.getX() < 0 || position.getY() < 0 || position.getZ() < 0){
+    		//System.out.println("F2 = true");
     		return true;
+    	}
     	return false;
     }
     
@@ -84,8 +86,10 @@ class Function {
     	
     	double averageWorkload = (workLoad + currentWorkload.getX() + currentWorkload.getY() + currentWorkload.getZ()) / 3; 
     	for (int i = 0; i<p.getPosition().getVectorCoordinate().length; i++){
-    		if(p.getPosition().getVectorCoordinate()[i] > averageWorkload)
+    		if(p.getPosition().getVectorCoordinate()[i] > averageWorkload){
+    			//System.out.println("F3 = true at " + i);
     			return true;
+    		}
     	}
     	return false;
     }

@@ -17,7 +17,7 @@ public class Swarm {
     public static final double INERTIA_MAX = 0.9;
     public static final double INERTIA_MIN = 0.4;
     public static final double DEFAULT_COGNITIVE = 1; // Cognitive component.
-    public static final double DEFAULT_SOCIAL = 2.05; // Social component.
+    public static final double DEFAULT_SOCIAL = 1.05; // Social component.
     
     public static final double INFINITY = Double.POSITIVE_INFINITY;
    
@@ -63,12 +63,13 @@ public class Swarm {
         double oldEval = bestEval;
         System.out.println("--------------------------EXECUTING-------------------------");
         System.out.println("Global Best Evaluation (Epoch " + 0 + "):\t"  + bestEval);
-
+        System.out.println("---------------------------------------------------------------");
         for (int i = 0; i < epochs; i++) {
         	//update inertia 
         	double inertia = inertia_max - (((inertia_max - inertia_min)*(i+1)) / epochs);
 
             if (bestEval < oldEval) {
+            	System.out.println("---------------------------------------------------------------");
                 System.out.println("Global Best Evaluation (Epoch " + (i + 1) + "):\t" + bestEval);
                 oldEval = bestEval;
             }
@@ -88,7 +89,7 @@ public class Swarm {
 
         System.out.println("---------------------------RESULT---------------------------");
         System.out.println("x = " + bestPosition.getX() + " y = " + bestPosition.getY() + " z = " + bestPosition.getZ());
-        Particle bestParticle = new Particle();
+        Particle bestParticle = new Particle("bestParticle");
         bestParticle.setPosition(bestPosition);
         System.out.println("max Time = " + Function.mainFunction(bestParticle, workLoad, currentWorkload).getBiggestResult());
         
@@ -104,11 +105,12 @@ public class Swarm {
     private Particle[] initialize () {
         Particle[] particles = new Particle[numOfParticles];
         for (int i = 0; i < numOfParticles; i++) {
-            Particle particle = new Particle();
+            Particle particle = new Particle("p"+i);
             System.out.println("Particle" + i + ": " + particle.getPosition().getX() + 
             											" " + particle.getPosition().getY()+ 
             											" " + particle.getPosition().getZ());
             double initialEval =  Function.mainFunction(particle, workLoad, currentWorkload).getSum();
+            System.out.println("particle"+i + " initial eval: " + initialEval );
             particle.updatePersonalBest(initialEval);;
             //Checked sum = 100 
             particles[i] = particle;
@@ -128,7 +130,7 @@ public class Swarm {
 
     	if(Function.constraintF3(p, workLoad , currentWorkload ))
     		eval = INFINITY;
-    	
+    	System.out.println("Evaluation of particle " + p.getName()+": " + eval);
     	return eval;
     }
 
@@ -140,6 +142,7 @@ public class Swarm {
     private void updateGlobalBest (Particle particle) {
         if (particle.getBestEval() < bestEval) {
             bestPosition = particle.getBestPosition();
+            System.out.println("Gbest: " + bestPosition.toString());
             bestEval = particle.getBestEval();
         }
     }
@@ -153,7 +156,7 @@ public class Swarm {
         Vector pBest = particle.getBestPosition();
         Vector gBest = bestPosition.clone();
         Vector pos = particle.getPosition();
-
+        
         Random random = new Random();
         double r1 = random.nextDouble();
         double r2 = random.nextDouble();
@@ -173,7 +176,7 @@ public class Swarm {
         gBest.mul(socialComponent);
         gBest.mul(r2);
         newVelocity.add(gBest);
-
+        System.out.println("New Velocity of particle " + particle.getName());
         particle.setVelocity(newVelocity);
     }
 
