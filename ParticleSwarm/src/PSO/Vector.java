@@ -1,92 +1,91 @@
 package PSO;
 
+import java.util.Arrays;
+
 /**
  * Can represent a position as well as a velocity.
  */
-class Vector {
 
-    private double x, y, z;
+class Vector {
+	
+	private int nodes;
+	private double[] p;
     private double limit = Double.MAX_VALUE;
 
-    Vector () {
-        this(0, 0, 0);
+    Vector (int nodes) {
+    	this.nodes = nodes;
+    	this.p = new double[nodes];
+    	Arrays.fill(this.p, 0);
+    }
+    
+    Vector (double[] v){
+    	p = v;
     }
 
-    Vector (double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    double getPAt (int index) {
+        return p[index];
     }
 
-    double getX () {
-        return x;
+
+    void set (double[] v) {
+        for(int i=0; i<p.length; i++){
+        	this.p[i] = v[i];
+        }
+    }
+    
+    void setSingleValue (double v){
+    	for(int i=0; i<p.length; i++){
+        	this.p[i] = v;
+        }
     }
 
-    double getY () {
-        return y;
+    public void setPAt (int index, double value){
+    	this.p[index] = value; 
     }
 
-    double getZ () {
-        return z;
-    }
-
-    void set (double x, double y, double z) {
-        setX(x);
-        setY(y);
-        setZ(z);
-    }
-
-    public void setX (double x) {
-        this.x = x;
-    }
-
-    public void setY (double y) {
-        this.y = y;
-    }
-
-    public void setZ (double z) {
-        this.z = z;
-    }
-
-    void add (Vector v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+    void add (double[] v) {
+    	for(int i=0; i<p.length; i++){
+    		this.p[i] += v[i];
+    	}
         limit();
     }
 
-    void sub (Vector v) {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
+    void sub (double[] v) {
+        for(int i=0; i<p.length; i++){
+        	this.p[i] -= v[i];
+        }
         limit();
     }
 
     void mul (double s) {
-        x *= s;
-        y *= s;
-        z *= s;
+        for(int i=0; i<p.length; i++){
+        	this.p[i] *= s;
+        }
         limit();
     }
 
     void div (double s) {
-        x /= s;
-        y /= s;
-        z /= s;
+    	for(int i=0; i<p.length; i++){
+    		this.p[i] /= s;
+    	}
         limit();
     }
 
     void normalize () {
         double m = mag();
         if (m > 0) {
-            x /= m;
-            y /= m;
-            z /= m;
+        	for(int i=0; i<p.length; i++){
+        		this.p[i] /= m;
+        	}
         }
     }
 
     private double mag () {
-        return Math.sqrt(x*x + y*y);
+    	double sum=0;
+    	for (int i=0; i<p.length; i++){
+    		sum += p[i]*p[i];
+    	}
+        return Math.sqrt(sum);
     }
 
     void limit (double l) {
@@ -98,38 +97,47 @@ class Vector {
         double m = mag();
         if (m > limit) {
             double ratio = m / limit;
-            x /= ratio;
-            y /= ratio;
+            for (int i=0; i<p.length; i++){
+        		this.p[i] /= ratio ;
+        	}
         }
     }
 
     public Vector clone () {
-        return new Vector(x, y, z);
+    	Vector clone = new Vector(nodes);
+    	clone.set(p);
+        return clone;
     }
 
+
     public String toString () {
-        return "(" + x + ", " + y + ", " + z + ")";
+    	String output = "";
+    	for(int i=0; i<p.length; i++){
+    		output += "p"+i+" : " + p[i] + "\t";
+    	}
+        return output;
     }
     
     
     public double[] getVectorCoordinate(){
-    	double[] coordinates = new  double[]{this.getX(), this.getY(), this.getZ()};
-    	
-    	return coordinates;
+    	return p;
     }
     
     public double getBiggestResult(){
-    	double max = this.getX();
-    	if(max < this.getY())
-    		max = this.getY();
-    	if(max < this.getZ())
-    		max = this.getZ();
-    	
+    	double max = p[0];
+    	for(int i=1; i<p.length; i++){
+    		if(max <= p[i])
+    			max = p[i];		
+    	}
     	return max;
     }
     
     public double getSum(){
-    	return this.getX() + this.getY() + this.getZ();
+    	double sum = 0;
+    	for(int i=1; i<p.length; i++){
+    		sum += p[i];
+    	}
+    	return sum;
     }
 
 }
