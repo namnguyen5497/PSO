@@ -17,9 +17,9 @@ class Particle {
      * @param beginRange    the minimum xyz values of the position (inclusive)
      * @param endRange      the maximum xyz values of the position (exclusive)
      */
-    Particle (String name) {
-        position = new Vector();
-        velocity = new Vector();
+    Particle (String name, int nodes) {
+        position = new Vector(nodes);
+        velocity = new Vector(nodes);
         setRandomPosition();
         bestPosition = position.clone();
         this.name = name;
@@ -28,17 +28,19 @@ class Particle {
 //   
 
     private void setRandomPosition () {
-        double x = rand();
-        double y = rand();
-        double z = rand();
-       
-        if(x == 0 && x == y && y == z){
-        	position.set(0, 0, 0);
-        }else{
-        	position.set(x/(x+y+z), y/(x+y+z), z/(x+y+z));
-        }  
+    	double sum = 0;
+    	for(int i = 0; i< position.getVectorCoordinate().length; i++){
+    		position.setPAt(i, rand());
+    		sum += position.getPAt(i);
+    	}
+    	
+    	for(int i = 0; i<position.getVectorCoordinate().length; i++){
+    		double value = position.getPAt(i);
+    		position.setPAt(i, value/sum);
+    	}
     }
 
+    
     /**
      * Generate a random number between 0.0 and 1.0.
      * @return              the randomly generated value
@@ -48,6 +50,7 @@ class Particle {
         return r.nextDouble(); //generate random from [0.0,1.0)
     }
 
+    
     /**
      * Update the personal best if the current evaluation is better.
      */
@@ -95,7 +98,7 @@ class Particle {
      * Update the position of a particle by adding its velocity to its position.
      */
     void updatePosition () {
-        this.position.add(velocity);
+        this.position.add(velocity.getVectorCoordinate());
         System.out.println("Particle "+ this.name + " newPos: " + position.toString());
         /*
         Vector currentP = this.position;

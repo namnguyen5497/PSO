@@ -1,8 +1,14 @@
 package PSO;
 
+import java.util.Arrays;
+
 class Function {
 	
-	private Function(){}
+	private static int nodes;
+	
+	public Function(int nodes){
+		this.nodes = nodes;
+	}
     
     static Vector mainFunction(Particle p, int workLoad, Vector currentWorkload){
     	/**
@@ -16,37 +22,40 @@ class Function {
     	Vector p_temp = position.clone(); // for 2nd part
     	
     	final double avgImageSize = 5413.26287; //bytes
-    	
+    	double[] coefficient = new double[nodes];
     	
     	//1st part: p*Wi / Bji
-    	position.mul(workLoad*avgImageSize*0.0009); 
-    	position.add(new Vector(614.3, 614.3, 614.3));
+    	position.mul(workLoad*avgImageSize*0.0009);
+    	Arrays.fill(coefficient,614.3);
+    	position.add(coefficient); 
     	position.mul(0.001); // change to second
     	
     	//2nd part: 1.2855 + 0.04928*p*workLoad (test_detect_pi_26.04)
     	p_temp.mul(Double.valueOf(workLoad));
     	p_temp.mul(0.04928);
-    	p_temp.add(new Vector(1.2855, 1.2855, 1.2855));
+    	Arrays.fill(coefficient, 1.2855);
+    	p_temp.add(coefficient);
     	
     	//3rd part: Theta*(1.28550+0.04928*currentWorkload)
-    	Vector Theta = new Vector(0,0,0);
+    	
     	currentWorkload.mul(0.04928);
     	
-    	if(position.getX() != 0)
-    		Theta.setX(1.28550 + currentWorkload.getX());
-    	if(position.getY() != 0)
-    		Theta.setY(1.28550 + currentWorkload.getY());
-    	if(position.getZ() != 0)
-    		Theta.setZ(1.28550 + currentWorkload.getZ());
+    	Vector Theta = new Vector(nodes);
+    	for(int i = 0; i < position.getVectorCoordinate().length; i++){
+    		if(position.getPAt(i) != 0){
+    			Theta.setPAt(i, 1.28550 + currentWorkload.getPAt(i));
+    		}
+    	}
     	
     	//4th part: TsendResult Detect_on_worker_27.03 (T6)
-    	Vector T_result = new Vector(0.047675,0.047675,0.047675); //TsendResult Detect_on_worker_27.03 (T6)
+    	Arrays.fill(coefficient, 0.047675);
+    	//TsendResult Detect_on_worker_27.03 (T6)
     	
     	
     	//Sum of 4 parts:
-    	position.add(p_temp);
-    	position.add(Theta);
-    	position.add(T_result);
+    	position.add(p_temp.getVectorCoordinate());
+    	position.add(Theta.getVectorCoordinate());
+    	position.add(coefficient);
     	//System.out.println("Tmax = " + p.getBiggestResult());
     	return position;
     	
@@ -57,7 +66,7 @@ class Function {
      * @return true if not satisfy 
      */
     static boolean constraintF1(Particle p){
-    	if(p.getPosition().getX() + p.getPosition().getY() + p.getPosition().getZ() != 1.0){
+    	if(p.getPosition().getSum() != 1.0){
     		//System.out.println("F1 = true");
     		return true;
     	}
@@ -70,9 +79,9 @@ class Function {
      */
     static boolean constraintF2(Particle p){
     	Vector position = p.getPosition();
-    	if(position.getX() < 0 || position.getY() < 0 || position.getZ() < 0){
-    		//System.out.println("F2 = true");
-    		return true;
+    	for(int i = 0; i<position.getVectorCoordinate().length; i++){
+    		if(position.getVectorCoordinate()[i] < 0)
+    			return true;
     	}
     	return false;
     }
@@ -83,8 +92,7 @@ class Function {
      * @return  true if not satisfy 
      */
     static boolean constraintF3(Particle p, int workLoad, Vector currentWorkload){
-    	
-    	double averageWorkload = (workLoad + currentWorkload.getX() + currentWorkload.getY() + currentWorkload.getZ()) / 3; 
+    	double averageWorkload = (workLoad + currentWorkload.getSum()) / 3; 
     	for (int i = 0; i<p.getPosition().getVectorCoordinate().length; i++){
     		if(p.getPosition().getVectorCoordinate()[i] > averageWorkload){
     			//System.out.println("F3 = true at " + i);
