@@ -1,5 +1,7 @@
 package PSO;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -94,12 +96,19 @@ public class Swarm {
         }
 
         System.out.println("---------------------------RESULT---------------------------");
-        System.out.println("Best position is: " + bestPosition.toString());
+        System.out.println("Best position is: " + bestPosition.toStringOutput());
         Particle bestParticle = new Particle("bestParticle", nodes);
         bestParticle.setPosition(bestPosition);
+        
+        System.out.println(model.mainFunction(bestParticle, workLoad, currentWorkload).toStringOutput());
         System.out.println("max Time = " + model.mainFunction(bestParticle, workLoad, currentWorkload).getBiggestResult());
         
         System.out.println("Final Best Evaluation: " + bestEval);
+        System.out.println("Final workload ratio: ");
+        Map<String, Integer> map = mappingRatio(bestParticle, workLoad);
+        for(String key : map.keySet()){
+        	System.out.println(key + " " + map.get(key));
+        }
         System.out.println("---------------------------COMPLETE-------------------------");
 
     }
@@ -112,7 +121,7 @@ public class Swarm {
         Particle[] particles = new Particle[numOfParticles];
         for (int i = 0; i < numOfParticles; i++) {
             Particle particle = new Particle("p"+i, nodes);
-            System.out.println("Particle" + i + ": " + particle.getPosition().getVectorCoordinate().toString());
+            System.out.println("Particle" + i + ": " + particle.getPosition().toStringOutput());
             										
             double initialEval =  model.mainFunction(particle, workLoad, currentWorkload).getSum();
             System.out.println("particle"+i + " initial eval: " + initialEval );
@@ -134,6 +143,9 @@ public class Swarm {
     		eval = INFINITY;
 
     	if(Function.constraintF3(p, workLoad , currentWorkload ))
+    		eval = INFINITY;
+    	
+    	if(Function.constraintF4(p, workLoad))
     		eval = INFINITY;
     	System.out.println("Evaluation of particle " + p.getName()+": " + eval);
     	return eval;
@@ -184,5 +196,24 @@ public class Swarm {
         System.out.println("New Velocity of particle " + particle.getName());
         particle.setVelocity(newVelocity);
     }
+    
+    private static Map<String, Integer> mappingRatio (Particle bestParticle, int workLoad){
+    	Map<String, Integer> workLoadRatio = new HashMap<String, Integer>();
+    	Vector result_workload = bestParticle.getPosition(); //cloning
+    	result_workload.mul(1000);
+    	System.out.println("Inside mapping: " + result_workload.toStringOutput());
+    	double[] ratio = result_workload.getVectorCoordinate();
+    	
+    	
+    	int sum = 0;
+    	for(int i = 1; i < ratio.length; i++){ //skip 0 because 0 is for Manager already
+    		workLoadRatio.put("worker-"+i+"-id", (int)Math.round(ratio[i]));
+    		sum += (int)Math.round(ratio[i]);
+    	}
+    	
+    	workLoadRatio.put("Manager", workLoad - sum);
+    	return workLoadRatio;
+    }
+    
 
 }

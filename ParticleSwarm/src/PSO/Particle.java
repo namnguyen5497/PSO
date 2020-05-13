@@ -57,7 +57,7 @@ class Particle {
     void updatePersonalBest (double eval) {
     	if (eval < bestEval) {
     		bestPosition = position.clone();
-    		System.out.println("Particle "+ this.name+ " pBest: " + bestPosition.toString());
+    		System.out.println("Particle "+ this.name+ " pBest: " + bestPosition.toStringOutput());
     		bestEval = eval;
     	}
     }
@@ -99,7 +99,7 @@ class Particle {
      */
     void updatePosition () {
         this.position.add(velocity.getVectorCoordinate());
-        System.out.println("Particle "+ this.name + " newPos: " + position.toString());
+        System.out.println("Particle "+ this.name + " newPos: " + position.toStringOutput());
         /*
         Vector currentP = this.position;
         this.position.set(currentP.getX() / (currentP.getX() + currentP.getY() + currentP.getZ())

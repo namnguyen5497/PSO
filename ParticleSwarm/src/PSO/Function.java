@@ -9,8 +9,9 @@ class Function {
 	public Function(int nodes){
 		this.nodes = nodes;
 	}
+
     
-    static Vector mainFunction(Particle p, int workLoad, Vector currentWorkload){
+    public Vector mainFunction(Particle p, int workLoad, Vector currentWorkload){
     	/**
          * @param workLoad 			number of images from 1 service
          * @param p    				percent workload
@@ -92,10 +93,9 @@ class Function {
      * @return  true if not satisfy 
      */
     static boolean constraintF3(Particle p, int workLoad, Vector currentWorkload){
-    	double averageWorkload = (workLoad + currentWorkload.getSum()) / 3; 
+    	double averageWorkload = (workLoad + currentWorkload.getSum()) / p.getPosition().getVectorCoordinate().length; 
     	for (int i = 0; i<p.getPosition().getVectorCoordinate().length; i++){
     		if(p.getPosition().getVectorCoordinate()[i] > averageWorkload){
-    			//System.out.println("F3 = true at " + i);
     			return true;
     		}
     	}
@@ -109,6 +109,12 @@ class Function {
      * @return
      */
     static boolean constraintF4(Particle p, int workLoad){
+    	Vector position = p.getPosition();
+    	position.mul(workLoad);
+    	for(int i=0; i<position.getVectorCoordinate().length;i++){
+    		if(position.getVectorCoordinate()[i] < 6)
+    			return true;
+    	}
     	return false;
     }
 }

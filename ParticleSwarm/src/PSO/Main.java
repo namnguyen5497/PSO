@@ -14,7 +14,7 @@ public class Main {
     	int particles = getUserInt("Particles: ");
         int epochs = getUserInt("Epochs:    ");
         int nodes = getUserInt("Number of nodes:	");
-        int workLoad = 100;
+        int workLoad = getUserInt("Number of images: ");
         Vector currentWorkload = new Vector(nodes);
         currentWorkload.setSingleValue(0);
         

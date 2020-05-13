@@ -19,11 +19,11 @@ class Vector {
     }
     
     Vector (double[] v){
-    	p = v;
+    	this.p = v;
     }
 
     double getPAt (int index) {
-        return p[index];
+        return this.p[index];
     }
 
 
@@ -79,29 +79,50 @@ class Vector {
         	}
         }
     }
-
+    
+    
+    /*
+    private double mag(){
+    	double sum=0;
+    	for (int i=0; i<p.length; i++){
+    		sum += p[i];
+    	}
+    	return sum;
+    }
+    
+    private void limit(){
+    	double m = mag();
+    	if(m > 100){
+    		for(int i=0; i<p.length; i++){
+    			this.p[i] /= m;
+    		}
+    	}
+    }
+     * 
+     */
     private double mag () {
     	double sum=0;
     	for (int i=0; i<p.length; i++){
     		sum += p[i]*p[i];
     	}
-        return Math.sqrt(sum);
+    	return Math.sqrt(sum);
     }
-
     void limit (double l) {
-        limit = l;
-        limit();
+    	limit = l;
+    	limit();
+    }
+    
+    
+    private void limit () {
+    	double m = mag();
+    	if (m > limit) {
+    		double ratio = m / limit;
+    		for (int i=0; i<p.length; i++){
+    			this.p[i] /= ratio ;
+    		}
+    	}
     }
 
-    private void limit () {
-        double m = mag();
-        if (m > limit) {
-            double ratio = m / limit;
-            for (int i=0; i<p.length; i++){
-        		this.p[i] /= ratio ;
-        	}
-        }
-    }
 
     public Vector clone () {
     	Vector clone = new Vector(nodes);
@@ -110,7 +131,7 @@ class Vector {
     }
 
 
-    public String toString () {
+    public String toStringOutput () {
     	String output = "";
     	for(int i=0; i<p.length; i++){
     		output += "p"+i+" : " + p[i] + "\t";
@@ -134,7 +155,7 @@ class Vector {
     
     public double getSum(){
     	double sum = 0;
-    	for(int i=1; i<p.length; i++){
+    	for(int i=0; i<p.length; i++){
     		sum += p[i];
     	}
     	return sum;
