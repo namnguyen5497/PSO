@@ -19,44 +19,68 @@ class Function {
          * @return      			total time
          */
     	Vector position = p.getPosition().clone();
-    	Vector p_temp = position.clone(); // for 2nd part
-    	
-    	final double avgImageSize = 5413.26287; //bytes
-    	double[] coefficient = new double[nodes];
-    	
-    	//1st part: p*Wi / Bji
-    	position.mul(workLoad*avgImageSize*0.0009);
-    	Arrays.fill(coefficient,614.3);
-    	position.add(coefficient); 
-    	position.mul(0.001); // change to second
-    	
-    	//2nd part: 1.2855 + 0.04928*p*workLoad (test_detect_pi_26.04)
-    	p_temp.mul(Double.valueOf(workLoad));
-    	p_temp.mul(0.04928);
-    	Arrays.fill(coefficient, 1.2855);
-    	p_temp.add(coefficient);
-    	
-    	//3rd part: Theta*(1.28550+0.04928*currentWorkload)
-    	
-    	currentWorkload.mul(0.04928);
+    	//Vector p_temp = position.clone(); // for 2nd part
     	
     	Vector Theta = new Vector(nodes);
     	for(int i = 0; i < position.getVectorCoordinate().length; i++){
     		if(position.getPAt(i) != 0){
-    			Theta.setPAt(i, 1.28550 + currentWorkload.getPAt(i));
+    			Theta.setPAt(i, 1);
     		}
     	}
     	
-    	//4th part: TsendResult Detect_on_worker_27.03 (T6)
-    	Arrays.fill(coefficient, 0.047675);
-    	//TsendResult Detect_on_worker_27.03 (T6)
+    	Vector worker = p.getPosition().getWorkerVector();
+    	Vector worker_temp = worker.clone();
+        Vector workerCWL = currentWorkload.getWorkerVector(); //Worker current Workload
+        
+        double man = p.getPosition().getPAt(0);
+        double manCWL = currentWorkload.getPAt(0); //Manager current Workload
+        
     	
+        /* 
+        *Calculate time for manager
+        */
+        double Tman = (man*workLoad*0.004 + 0.619)   // y = 0.004*x + 0.0619   ~ P*Wi / Bij
+        						+ (0.01*man*workLoad+0.154)    // y = 0.01*x + 0.154 ~ P.Wi / fi
+        						+ (0.01*manCWL+0.154)*Theta.getPAt(0) // (y = 0.01*x + 0.154)*Theta ~ Theta*Ni/fi
+        						+ 0.047675; // Ri / Bij
+        
+       
+        /*
+        calculate time for workers
+        */
+        //y = 0.004*x + 0.0619 ~ P*Wi / Bij
+        worker.mul(workLoad*0.004);
+        double[] coef = new double[nodes-1];
+        Arrays.fill(coef, 0.619);
+        worker.add(coef);
+        
+        // y = 0.05*x + 1.244 ~ P.Wi / fi
+    	worker_temp.mul(workLoad*0.05);         
+    	Arrays.fill(coef, 1.244);
+    	worker_temp.add(coef);
+    	
+    	//(y = 0.05*x + 1.244)*Theta ~ Theta*Ni/fi
+    	workerCWL.mul(0.05);
+    	workerCWL.add(coef);
+    	Vector Theta_worker = Theta.getWorkerVector();
+    	workerCWL.mulVector(Theta_worker);
+    	
+    	//Ri / Bij
+    	Arrays.fill(coef, 0.047675 );
+    	worker.add(coef);
     	
     	//Sum of 4 parts:
-    	position.add(p_temp.getVectorCoordinate());
-    	position.add(Theta.getVectorCoordinate());
-    	position.add(coefficient);
-    	//System.out.println("Tmax = " + p.getBiggestResult());
+    	worker.add(worker_temp.getVectorCoordinate());
+    	worker.add(workerCWL.getVectorCoordinate());
+    	
+    	for(int i = 0; i< position.getVectorCoordinate().length; i++){
+    		if(i==0){
+    			position.setPAt(0, Tman);
+    			continue;
+    		}
+    		position.setPAt(i, worker.getPAt(i-1));
+    	}
+    	
     	return position;
     	
     }
@@ -109,6 +133,12 @@ class Function {
      * @return
      */
     static boolean constraintF4(Particle p, int workLoad){
+    	Vector position = p.getPosition();
+    	position.mul(workLoad);
+    	for(int i=0; i<position.getVectorCoordinate().length;i++){
+    		if(position.getVectorCoordinate()[i] < 100)
+    			return true;
+    	}
     	return false;
     }
 }

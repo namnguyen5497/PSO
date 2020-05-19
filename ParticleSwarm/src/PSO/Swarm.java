@@ -1,5 +1,6 @@
 package PSO;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -54,7 +55,9 @@ public class Swarm {
         this.workLoad = workLoad;
         this.currentWorkload = currentWorkload;
         bestPosition = new Vector(nodes);
-        bestPosition.setSingleValue(INFINITY);
+        double[] initialBestPosition = new double[nodes];
+        Arrays.fill(initialBestPosition, INFINITY);
+        bestPosition.set(initialBestPosition);
         bestEval = INFINITY;
        
         model = new Function(nodes); //model 
@@ -135,6 +138,10 @@ public class Swarm {
 
     	if(Function.constraintF3(p, workLoad , currentWorkload ))
     		eval = INFINITY;
+    	
+    	if(Function.constraintF4(p, workLoad))
+    		eval = INFINITY;
+    	
     	System.out.println("Evaluation of particle " + p.getName()+": " + eval);
     	return eval;
     }

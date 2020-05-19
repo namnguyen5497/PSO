@@ -1,5 +1,6 @@
 package PSO;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -14,9 +15,10 @@ public class Main {
     	int particles = getUserInt("Particles: ");
         int epochs = getUserInt("Epochs:    ");
         int nodes = getUserInt("Number of nodes:	");
-        int workLoad = 100;
+        int workLoad = 1000;
         Vector currentWorkload = new Vector(nodes);
-        currentWorkload.setSingleValue(0);
+        double[] cwl = new double[]{0,0,0};
+        currentWorkload.set(cwl);
         
         Swarm swarm = new Swarm(particles, epochs, nodes, workLoad, currentWorkload);
         swarm.run();

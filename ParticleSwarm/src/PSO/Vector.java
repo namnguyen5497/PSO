@@ -19,15 +19,19 @@ class Vector {
     }
     
     Vector (double[] v){
-    	p = v;
+    	this.p = new double[v.length];
+    	for(int i=0; i<p.length; i++){
+        	this.p[i] = v[i];
+        }
     }
 
     double getPAt (int index) {
-        return p[index];
+        return this.p[index];
     }
 
 
     void set (double[] v) {
+    	this.p = new double[v.length];
         for(int i=0; i<p.length; i++){
         	this.p[i] = v[i];
         }
@@ -62,6 +66,13 @@ class Vector {
         	this.p[i] *= s;
         }
         limit();
+    }
+    
+    void mulVector(Vector v){
+    	for(int i = 0; i<p.length; i++){
+    		this.p[i] *= v.getPAt(i);
+    	}
+    	limit();
     }
 
     void div (double s) {
@@ -105,7 +116,7 @@ class Vector {
 
     public Vector clone () {
     	Vector clone = new Vector(nodes);
-    	clone.set(p);
+    	clone.set(this.p);
         return clone;
     }
 
@@ -139,6 +150,14 @@ class Vector {
     	}
     	return sum;
     }
-
+    
+    public Vector getWorkerVector(){
+        double[] w = new double[nodes-1];
+        for(int i = 0; i<w.length; i++){
+            w[i] = this.p[i+1];
+        }
+        //System.arraycopy(this.p, 1, w, 1, w.length - 1);
+        return new Vector(w);
+    }
 }
 
